@@ -18,7 +18,7 @@
     <ClCompile Include="Astar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="inputParsercpp.cpp">
+    <ClCompile Include="inputParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
