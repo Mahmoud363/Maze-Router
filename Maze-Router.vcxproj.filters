@@ -26,6 +26,9 @@
     <ClInclude Include="Astar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt">

@@ -27,6 +27,20 @@ struct cell {
 	int f;
 	char pre;
 	string id;
+	cell(pin p) {
+		x = p.x;
+		y = p.y;
+		layer = p.layer;
+		id = p.id;
+	}
+	cell() {
+		x = 0;
+		y = 0;
+		layer = 0;
+		f = 0;
+		pre = '\0';
+		id = "";
+	}
 };
 
 struct myCompare {
@@ -47,4 +61,5 @@ struct net{
 };
 
 typedef vector<net> netList;
-
+typedef vector<vector<vector<cell> > > cellGrid;
+typedef vector<vector<vector<int> > > visGrid;
