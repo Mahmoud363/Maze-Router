@@ -13,25 +13,11 @@ struct pin
 	string id;
 };
 
-string strip_spaces(string str) {
-	str.erase(remove(str.begin(), str.end(), ' '), str.end());
-	return str;
-}
-
-vector<string> split_commas(string str) {
-	str += ',';
-	vector<string> buffer;
-	string tmp;
-	while (!str.empty()) {
-		tmp = str.substr(str.find(',')+1);
-		buffer.push_back(tmp);
-		str.erase(str.begin(), str.end() + (str.find(','));
-	}
-	return buffer;
-}
-
 int main()
 {
+	string subject("n1 (1, 10, 20) (2, 30, 50) (1, 5 ,1000) "
+		"n2 (1, 10, 20) (2, 30, 50) (1, 5 ,1000)");
+
 	vector<vector<string>> parsedNet;
 	string sourcePath;
 	cin >> sourcePath;
@@ -42,13 +28,10 @@ int main()
 
 	// Template instantiations for 
 	// extracting the matching pattern. 
-	int netCounter = 1;
-
+	
 	string line;
 	getline(read, line);
 	while (!read.eof()) {
-		vector<string> net;
-		vector<string> pinValues;
 		smatch match;
 		regex r("\\((.*?)\\)");
 		string subject = line;
@@ -58,10 +41,25 @@ int main()
 				<< "and it is found at position "
 				<< match.position(0) << endl;
 			i++;
+			//Extracting the details for each pin without the brackets
 			string parse = match.str(0).substr(1, match.str(0).size()-2);
-			parse = strip_spaces(parse);
-			pinValues = split_commas(parse);
+			//Entering the details of the pin into the struct pin
+			stringstream ss(parse); 
+			pin newpin;
+			for(int i=0;i<3;i++) { 
+				string substr; 
+				getline(ss, substr, ',' ); 
+				switch(i){
+					case 0:
+						newpin.layer= atoi(substr.c_str());
+					case 1:
+						newpin.x= atoi(substr.c_str());
+					case 2:
+						newpin.y= atoi(substr.c_str());
+				}
+			} 
 
+			cout<< newpin.layer<<"/"<<newpin.x<<"/"<<newpin.y<<endl;
 
 			// suffix to find the rest of the string. 
 			subject = match.suffix().str();
