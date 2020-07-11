@@ -3,6 +3,7 @@
 #include <regex>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 using namespace std;
 
 struct pin
