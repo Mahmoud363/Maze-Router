@@ -58,6 +58,7 @@ typedef std::priority_queue<cell, vector<cell>, myCompare> mypq_type;
 struct net{
 	vector<pin> pins;
 	vector<pin> paths;
+	int boxsize;
 };
 
 typedef vector<net> netList;

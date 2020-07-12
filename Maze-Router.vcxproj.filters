@@ -21,10 +21,10 @@
     <ClCompile Include="Dgrid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="inp.hpp">
+    <ClCompile Include="InputParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputParser.cpp">
+    <ClCompile Include="Router.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -39,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Router.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

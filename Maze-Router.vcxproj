@@ -141,14 +141,15 @@
   <ItemGroup>
     <ClCompile Include="Astar.cpp" />
     <ClCompile Include="Dgrid.cpp" />
-    <ClCompile Include="inp.hpp" />
     <ClCompile Include="InputParser.cpp" />
+    <ClCompile Include="Router.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Astar.h" />
     <ClInclude Include="Dgrid.h" />
     <ClInclude Include="Headers.h" />
     <ClInclude Include="InputParser.h" />
+    <ClInclude Include="Router.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="test.txt" />

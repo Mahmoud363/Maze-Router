@@ -2,6 +2,10 @@
 int InputParser::getMaxLayer() {
 	return maxLayer;
 }
+void InputParser::sortNets()
+{
+	sort(NetList.begin(), NetList.end(), comp);
+}
 InputParser::InputParser(string sourcePath)
 {
 	ifstream read(sourcePath);
@@ -55,6 +59,27 @@ InputParser::InputParser(string sourcePath)
 InputParser::~InputParser()
 {
 }
+void InputParser::computeNetsArea(){
+	
+	for (int i = 0; i < NetList.size(); i++) {
+		int mini = INT_MAX, maxi = -1, minj = INT_MAX, maxj = -1, mink = INT_MAX, maxk = -1;
+		for (int j = 0; j < NetList[i].pins.size(); j++) {
+			mini = min(mini, NetList[i].pins[j].x);
+			minj = min(minj, NetList[i].pins[j].y);
+			mink = min(mink, NetList[i].pins[j].layer);
+			maxi = max(maxi, NetList[i].pins[j].x);
+			maxj = max(maxj, NetList[i].pins[j].y);
+			maxk = max(maxk, NetList[i].pins[j].layer);
+		}
+		NetList[i].boxsize = (maxi - mini + 1) * (maxj - minj + 1)/**(maxk-mink+1)*/;
+	}
+}
+
+bool InputParser::comp(net& a, net& b)
+{
+	return a.boxsize < b.boxsize;
+}
+
 netList  InputParser::getNetList() {
 	return NetList;
 }

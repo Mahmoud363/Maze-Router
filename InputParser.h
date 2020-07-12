@@ -21,11 +21,16 @@ public:
 	InputParser(string sourcePath);
 	netList getNetList();
 	int getMaxLayer();
+	void sortNets();
 	~InputParser();
 
 private:
 	string line;
 	netList NetList;
 	int maxLayer = -1;
+	void computeNetsArea();
+	bool comp(net& a, net& b);
+
+
 };
 
