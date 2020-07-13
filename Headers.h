@@ -14,6 +14,14 @@ using namespace std;
 
 struct pin
 {
+	pin();
+    pin(int x_, int y_ ,int z_, string id_)
+    {
+        x=x_;
+        y=y;
+        layer=z_;
+        id=id_;
+    }
 	int x;
 	int y;
 	int layer;
