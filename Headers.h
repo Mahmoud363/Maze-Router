@@ -7,25 +7,26 @@
 #include<fstream>
 #include<regex>
 #include<algorithm>
-
+#include<climits>
 
 using namespace std;
 
 
 struct pin
 {
-	pin();
-    pin(int x_, int y_ ,int z_, string id_)
-    {
-        x=x_;
-        y=y;
-        layer=z_;
-        id=id_;
-    }
+	
 	int x;
 	int y;
 	int layer;
 	string id;
+	/*
+	pin(int x_, int y_ ,int z_, string id_)
+	{
+		x=x_;
+		y=y;
+		layer=z_;
+		id=id_;
+	}*/
 };
 
 struct cell {
@@ -40,6 +41,7 @@ struct cell {
 		y = p.y;
 		layer = p.layer;
 		id = p.id;
+		f = 0;
 	}
 	cell() {
 		x = 0;
@@ -48,11 +50,29 @@ struct cell {
 		f = 0;
 		pre = '\0';
 		id = "";
+	}/*
+	cell& operator=(const cell& a)
+	{
+		x = a.x;
+		y = a.y;
+		layer = a.layer;
+		f = a.f;
+		pre = a.pre;
+		id = a.id;
+		return *this;
+	}*/
+	bool operator==(const cell& a) const
+	{
+		return (x == a.x && y == a.y && layer == a.layer);
+	}
+	bool operator!=(const cell& a) const
+	{
+		return (x != a.x || y != a.y || layer != a.layer);
 	}
 };
 
 struct myCompare {
-	bool operator()(cell const& c1, cell const& c2)
+	bool operator()(cell c1, cell c2)
 	{
 		return c1.f < c2.f;
 	}

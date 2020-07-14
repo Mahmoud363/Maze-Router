@@ -37,115 +37,117 @@ int calculateHeuristic(cell current, cell target)
 {
     int h;
     if(target.layer%2==1)
-        h=abs(current.x-target.x)+10*(current.y-target.y)+10*(current.layer-target.layer);
+        h=abs(current.x-target.x)+15*(current.y-target.y)+10*(current.layer-target.layer);
     else
-        h=abs(current.y-target.y)+10*(current.x-target.x)+10*(current.layer-target.layer);
+        h=abs(current.y-target.y)+15*(current.x-target.x)+10*(current.layer-target.layer);
     
     return h;
 }
 
-vector<pin> findpath(cell source, cell target, cellGrid dcell, visGrid dvisit){
-    pin start(source.x,source.y,source.layer,source.id);
-    vector<pin>path;
-    path.push_back(start);
-    vector<cell>openList;
-    openList.push_back(source);
-    cell temp;
-    pin temp1;
-    bool destination_found=false;
-    
-    
-    cell current =source;
-    
-    while(!openList.empty())
-    {
-        for(int i=0;i<6;i++){
-            temp.x=current.x+directions[i].x;
-            temp.y=current.y+directions[i].y;
-            temp.layer= current.layer+directions[i].z;
-            if(isValid(temp))
-            {
-            //dvisit[temp.x][temp.y][temp.z]=1;
-            if(current.layer%2==1){
-                if(isDestination(temp,target)){
-                    dcell[temp.x][temp.y][temp.layer].id=current.id;
-                    temp1(temp.x,temp.y,temp.layer,temp.id);
-                    path.push_back(temp1);
-                    destination_found=true;
-                     return path;
-                }
-                else if(dvisit[temp.x][temp.y][temp.z]==false)
-                {
-                    if(i%3==0)
-                        gnew=1;
-                    else if(i%3==1)
-                        gnew=10;
-                    else
-                        gnew=10*abs(temp.layer-current.layer);
-                    
-                    hnew=calculateHeuristic(temp,target);
-                    fnew=gnew+hnew;
-                    dcell[temp.x][temp.y][temp.layer].f=fnew;
-                    if(fnew<min_cost)
-                    {
-                        mincell=temp;
-                        min_cost=fnew;
-                        temp1(temp.x,temp.y,temp.layer,temp.id);
-                        
-                    }
-                        
-                }
-                
-                   
-        
-            }
-                else
-                {
-                    if(isDestination(temp,target)){
-                        dcell[temp.x][temp.y][temp.layer].id=current.id;
-                        temp1(temp.x,temp.y,temp.layer,temp.id);
-                        path.push_back(temp1);
-                        destination_found=true;
-                         return path;
-                    }
-                    else if(dvisit[temp.x][temp.y][temp.z]==false)
-                    {
-                        if(i%3==0)
-                            gnew=10;
-                        else if(i%3==1)
-                            gnew=1;
-                        else
-                            gnew=10*abs(temp.layer-current.layer);
-                        
-                        hnew=calculateHeuristic(temp,target);
-                        fnew=gnew+hnew;
-                        dcell[temp.x][temp.y][temp.layer].f=fnew;
-                        if(fnew<min_cost)
-                        {
-                            mincell=temp;
-                            min_cost=fnew;
-                            temp1(temp.x,temp.y,temp.layer,temp.id);
-                            
-                        }
-                            
-                    }
-                    
-                }
-            }
-            
-        }
-        
-        mincell=current;
-        
-        dcell[mincell.x][mincell.y][mincell.layer].id = current.id;
-        openList.pop_back();
-        path.push_back(temp1);
-        openList.push_back(mincell);
-        
-    }
-    
-    
-    return path;
-    
+void findpath(netList& nets) {
 
+    for (int i = 0; i < nets.size(); i++)
+    {
+        for (int j = 0; j < nets[i].pins.size(); j++){
+            mypq_type pqueue;
+            cell start = 
+            pqueue.push(nets[i].pins[j]);
+            nets[i].paths.push_back(nets[i].pins[j]);
+            
+            cell temp;
+            pin temp1;
+            bool destination_found = false;
+
+
+            cell current = source;
+
+            while (!openList.empty())
+            {
+                for (int i = 0; i < 6; i++) {
+                    temp.x = current.x + directions[i].x;
+                    temp.y = current.y + directions[i].y;
+                    temp.layer = current.layer + directions[i].z;
+                    if (isValid(temp))
+                    {
+                        //dvisit[temp.x][temp.y][temp.z]=1;
+                        if (current.layer % 2 == 1) {
+                            if (isDestination(temp, target)) {
+                                dcell[temp.x][temp.y][temp.layer].id = current.id;
+                                temp1(temp.x, temp.y, temp.layer, temp.id);
+                                path.push_back(temp1);
+                                destination_found = true;
+                                return path;
+                            }
+                            else if (dvisit[temp.x][temp.y][temp.z] == false)
+                            {
+                                if (i % 3 == 0)
+                                    gnew = 1;
+                                else if (i % 3 == 1)
+                                    gnew = 10;
+                                else
+                                    gnew = 10 * abs(temp.layer - current.layer);
+
+                                hnew = calculateHeuristic(temp, target);
+                                fnew = gnew + hnew;
+                                dcell[temp.x][temp.y][temp.layer].f = fnew;
+                                if (fnew < min_cost)
+                                {
+                                    mincell = temp;
+                                    min_cost = fnew;
+                                    temp1(temp.x, temp.y, temp.layer, temp.id);
+
+                                }
+
+                            }
+
+
+
+                        }
+                        else
+                        {
+                            if (isDestination(temp, target)) {
+                                dcell[temp.x][temp.y][temp.layer].id = current.id;
+                                temp1(temp.x, temp.y, temp.layer, temp.id);
+                                path.push_back(temp1);
+                                destination_found = true;
+                                return path;
+                            }
+                            else if (dvisit[temp.x][temp.y][temp.z] == false)
+                            {
+                                if (i % 3 == 0)
+                                    gnew = 10;
+                                else if (i % 3 == 1)
+                                    gnew = 1;
+                                else
+                                    gnew = 10 * abs(temp.layer - current.layer);
+
+                                hnew = calculateHeuristic(temp, target);
+                                fnew = gnew + hnew;
+                                dcell[temp.x][temp.y][temp.layer].f = fnew;
+                                if (fnew < min_cost)
+                                {
+                                    mincell = temp;
+                                    min_cost = fnew;
+                                    temp1(temp.x, temp.y, temp.layer, temp.id);
+
+                                }
+
+                            }
+
+                        }
+                    }
+
+                }
+
+                mincell = current;
+
+                dcell[mincell.x][mincell.y][mincell.layer].id = current.id;
+                openList.pop_back();
+                path.push_back(temp1);
+                openList.push_back(mincell);
+
+            }
+        }
+    }
+ 
 }

@@ -29,7 +29,7 @@ private:
 	netList NetList;
 	int maxLayer = -1;
 	void computeNetsArea();
-	bool comp(net& a, net& b);
+	//bool comp(net& a, net& b);
 
 
 };
