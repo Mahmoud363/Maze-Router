@@ -1,7 +1,29 @@
 #include "InputParser.h"
+#include <string>
+#include <climits>
+void InputParser::computeNetsArea(){
+	
+	for (int i = 0; i < NetList.size(); i++) {
+		int mini = 99999999, maxi = -1, minj = 99999999, maxj = -1, mink = 99999999, maxk = -1;
+		for (int j = 0; j < NetList[i].pins.size(); j++) {
+			mini = min(mini, NetList[i].pins[j].x);
+			minj = min(minj, NetList[i].pins[j].y);
+			mink = min(mink, NetList[i].pins[j].layer);
+			maxi = max(maxi, NetList[i].pins[j].x);
+			maxj = max(maxj, NetList[i].pins[j].y);
+			maxk = max(maxk, NetList[i].pins[j].layer);
+		}
+		NetList[i].boxsize = (maxi - mini + 1) * (maxj - minj + 1)/**(maxk-mink+1)*/;
+	}
+}
 int InputParser::getMaxLayer() {
 	return maxLayer;
 }
+bool comp(net& a, net& b)
+{
+	return a.boxsize < b.boxsize;
+}
+
 void InputParser::sortNets()
 {
 	sort(NetList.begin(), NetList.end(), comp);
@@ -31,7 +53,7 @@ InputParser::InputParser(string sourcePath)
 			string parse = match.str(0).substr(1, match.str(0).size() - 2);
 			//Entering the details of the pin into the struct pin
 			stringstream ss(parse);
-			pin newpin;
+			struct pin newpin;
 			for (int i = 0; i < 3; i++) {
 				string substr;
 				getline(ss, substr, ',');
@@ -45,46 +67,31 @@ InputParser::InputParser(string sourcePath)
 				}
 			}
 			maxLayer = max(maxLayer, newpin.layer + 1);
+			newpin.id= "n"+to_string(counter)+"_p"+to_string(j);
 			cout << newpin.layer << "/" << newpin.x << "/" << newpin.y << "/" << newpin.id << endl;
 			Net.pins.push_back(newpin);
-
+			cell c(newpin);
 			// suffix to find the rest of the string. 
 			subject = match.suffix().str();
+
 		}
 		NetList.push_back(Net);
 		counter++;
 	}
+
 }
 
 InputParser::~InputParser()
 {
 }
-void InputParser::computeNetsArea(){
-	
-	for (int i = 0; i < NetList.size(); i++) {
-		int mini = INT_MAX, maxi = -1, minj = INT_MAX, maxj = -1, mink = INT_MAX, maxk = -1;
-		for (int j = 0; j < NetList[i].pins.size(); j++) {
-			mini = min(mini, NetList[i].pins[j].x);
-			minj = min(minj, NetList[i].pins[j].y);
-			mink = min(mink, NetList[i].pins[j].layer);
-			maxi = max(maxi, NetList[i].pins[j].x);
-			maxj = max(maxj, NetList[i].pins[j].y);
-			maxk = max(maxk, NetList[i].pins[j].layer);
-		}
-		NetList[i].boxsize = (maxi - mini + 1) * (maxj - minj + 1)/**(maxk-mink+1)*/;
-	}
-}
 
-bool InputParser::comp(net& a, net& b)
-{
-	return a.boxsize < b.boxsize;
-}
+
 
 netList  InputParser::getNetList() {
 	return NetList;
 }
 
-/*
+
 int main ()
 {
 
@@ -96,4 +103,3 @@ int main ()
 	int i = 0;
 
 }
-*/
