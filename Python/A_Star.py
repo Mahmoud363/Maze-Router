@@ -1,6 +1,6 @@
 from inputPaser import inputParser
 from pin import Pin
-import sys
+
 
 class Node():
     """A node class for A* Pathfinding"""
@@ -18,14 +18,14 @@ class Node():
 
     def __eq__(self, other):
         return (self.pin.x == other.pin.x and\
-         self.pin.y == other.p.y and \
+         self.pin.y == other.pin.y and \
          self.pin.layer == other.pin.layer)
 
 
 def astar(Dgrid, nets):
     """Returns a list of tuples as a path from the given start to the given end in the given Dgrid"""
     paths = []
-    for indx, net in enumerate(nets):
+    for index, net in enumerate(nets):
         # Create start and end node
         start = net[0]
         start_nodes = [Node(None, start)]
@@ -37,7 +37,7 @@ def astar(Dgrid, nets):
             end = p
 
             end_node = Node(None, end)
-
+            Dgrid[p.layer][p.y][p.x][1] =0
             # Initialize both open and closed list
             open_list = []
             closed_list = []
@@ -77,6 +77,8 @@ def astar(Dgrid, nets):
                     path = list( dict.fromkeys(path ) )
                     start_nodes.extend(list(dict.fromkeys(startList[::-1])))
                     start_nodes = list( dict.fromkeys(start_nodes ) )
+                    open_list = []
+                    continue
                 # Generate children
                 children = []
                 for i, new_position in enumerate([(0, 0, 1), (0, 1, 0), (1, 0, 0), (0, 0, -1), (0, -1, 0), (-1, 0, 0)]): # Adjacent squares
@@ -106,17 +108,15 @@ def astar(Dgrid, nets):
                     flag1 = True
                     # Child is on the closed list
                     for closed_child in closed_list:
-                        print(child.pin.x)
-                        print(closed_child.pin.x)
-                        if child.pin.x == closed_child.pin.x and child.pin.y == closed_child.pin.y and child.pin.layer == closed_child.pin.layer:
+                        if child == closed_child:
                             flag1 = False
 
                     if(flag1):
                         # Create the f, g, and h values
-                        if(child.pin.layer %2):
-                            child.h = abs(current_node.pin.x-end_node.pin.x) + \
-                                15 * abs(current_node.pin.y-end_node.pin.y) + \
-                                10 * abs(current_node.pin.layer-end_node.pin.layer)
+                        if(child.pin.layer %2==1):
+                            child.h = abs(child.pin.x-end_node.pin.x) + \
+                                15 * abs(child.pin.y-end_node.pin.y) + \
+                                10 * abs(child.pin.layer-end_node.pin.layer)
                             if(child.indx%3==0):
                                 child.g += 1
                             elif(child.indx%3==1):
@@ -125,9 +125,9 @@ def astar(Dgrid, nets):
                                 child.g += 10 * abs(current_node.pin.layer-child.pin.layer)
 
                         else:
-                            child.h = abs(current_node.pin.x-end_node.pin.x) + \
-                                15 * abs(current_node.pin.y-end_node.pin.y) + \
-                                10 * abs(current_node.pin.layer-end_node.pin.layer)
+                            child.h = 15 * abs(child.pin.x-end_node.pin.x) + \
+                                abs(child.pin.y-end_node.pin.y) + \
+                                10 * abs(child.pin.layer-end_node.pin.layer)
                             if(child.indx%3==0):
                                 child.g += 15
                             elif(child.indx%3==1):
@@ -150,17 +150,8 @@ def astar(Dgrid, nets):
                             open_list.append(child)
         paths.append(path)
         for place in path:
-            Dgrid[place[0]][place[1]][place[2]] = ('nf'+str(indx), 1) 
-
-
-
-path = 'test.txt' 
-
-input_parser = inputParser(path)
-astar(input_parser.pinsGrid,input_parser.nets)
-
-print ("DONE")
-
+            Dgrid[place[0]][place[1]][place[2]] = ('nf'+str(index), 1) 
+    return paths
 
 """
 def main():

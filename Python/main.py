@@ -11,6 +11,8 @@ input_parser.parseFile(path)
 
 input_parser.createGrid()
 
-astar(input_parser.pinsGrid, input_parser.nets)
+paths = astar(input_parser.pinsGrid, input_parser.nets)
+
+print(paths)
 
 print ("DONE")
