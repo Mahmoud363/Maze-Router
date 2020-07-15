@@ -14,7 +14,6 @@ class Node():
         self.f = 0
 
     def __hash__(self):
-        #print(hash(str(self)))
         return hash(str(self))
 
     def __eq__(self, other):
@@ -74,12 +73,10 @@ def astar(Dgrid, nets):
                         current.h=0
                         startList.append(current)
                         current = current.parent
-                    path.extend(list(dict.fromkeys(tempPath[::-1]))) 
+                    path.extend(list(dict.fromkeys(tempPath[::-1])))
                     path = list( dict.fromkeys(path ) )
-                    start_nodes.extend(list(dict.fromkeys(startList[::-1]))) 
+                    start_nodes.extend(list(dict.fromkeys(startList[::-1])))
                     start_nodes = list( dict.fromkeys(start_nodes ) )
-
-
                 # Generate children
                 children = []
                 for i, new_position in enumerate([(0, 0, 1), (0, 1, 0), (1, 0, 0), (0, 0, -1), (0, -1, 0), (-1, 0, 0)]): # Adjacent squares
@@ -125,7 +122,7 @@ def astar(Dgrid, nets):
                             elif(child.indx%3==1):
                                 child.g += 15
                             else:
-                                child.g += 10 * abs(current.pin.layer-child.pin.layer)
+                                child.g += 10 * abs(current_node.pin.layer-child.pin.layer)
 
                         else:
                             child.h = abs(current_node.pin.x-end_node.pin.x) + \
@@ -136,7 +133,7 @@ def astar(Dgrid, nets):
                             elif(child.indx%3==1):
                                 child.g += 1
                             else:
-                                child.g += 10 * abs(current.pin.layer-child.pin.layer)
+                                child.g += 10 * abs(current_node.pin.layer-child.pin.layer)
 
                         
                         child.f = child.g + child.h
