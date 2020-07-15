@@ -3,10 +3,9 @@
 class Pin:
 
     # default constructor
-    def __init__(self, layer=0, x=0, y=0, _id='', pre=None):
+    def __init__(self, layer, x, y, _id):
         self.layer = layer
-        self.x = layer
-        self.y = layer
+        self.x = x
+        self.y = y
         self.id=_id
-        self.pre = pre 
 

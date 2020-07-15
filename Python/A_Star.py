@@ -1,6 +1,6 @@
 from inputPaser import inputParser
 from pin import Pin
-
+import sys
 
 class Node():
     """A node class for A* Pathfinding"""
@@ -13,16 +13,20 @@ class Node():
         self.h = 0
         self.f = 0
 
+    def __hash__(self):
+        #print(hash(str(self)))
+        return hash(str(self))
+
     def __eq__(self, other):
         return (self.pin.x == other.pin.x and\
-         self.pin.y == other.pin.y and \
+         self.pin.y == other.p.y and \
          self.pin.layer == other.pin.layer)
 
 
 def astar(Dgrid, nets):
     """Returns a list of tuples as a path from the given start to the given end in the given Dgrid"""
     paths = []
-    for index, net in enumerate(nets):
+    for indx, net in enumerate(nets):
         # Create start and end node
         start = net[0]
         start_nodes = [Node(None, start)]
@@ -70,8 +74,11 @@ def astar(Dgrid, nets):
                         current.h=0
                         startList.append(current)
                         current = current.parent
-                    path = list( dict.fromkeys(path.extend(list(dict.fromkeys(tempPath[::-1]))) ) )
-                    start_nodes = list( dict.fromkeys(start_nodes.extend(list(dict.fromkeys(startList[::-1]))) ) )
+                    path.extend(list(dict.fromkeys(tempPath[::-1]))) 
+                    path = list( dict.fromkeys(path ) )
+                    start_nodes.extend(list(dict.fromkeys(startList[::-1]))) 
+                    start_nodes = list( dict.fromkeys(start_nodes ) )
+
 
                 # Generate children
                 children = []
@@ -86,7 +93,7 @@ def astar(Dgrid, nets):
                         continue
 
                     # Make sure walkable terrain
-                    if Dgrid[node_pin.layer][node_pin.y][node_pin.x] != 0:
+                    if Dgrid[node_pin.layer][node_pin.y][node_pin.x][1] != 0:
                         continue
 
                     # Create new node
@@ -102,15 +109,17 @@ def astar(Dgrid, nets):
                     flag1 = True
                     # Child is on the closed list
                     for closed_child in closed_list:
-                        if child == closed_child:
+                        print(child.pin.x)
+                        print(closed_child.pin.x)
+                        if child.pin.x == closed_child.pin.x and child.pin.y == closed_child.pin.y and child.pin.layer == closed_child.pin.layer:
                             flag1 = False
 
                     if(flag1):
                         # Create the f, g, and h values
                         if(child.pin.layer %2):
-                            child.h = abs(current_node.pin.x-end.pin.x) + \
-                                15 * abs(current_node.pin.y-end.pin.y) + \
-                                10 * abs(current_node.pin.layer-end.pin.layer)
+                            child.h = abs(current_node.pin.x-end_node.pin.x) + \
+                                15 * abs(current_node.pin.y-end_node.pin.y) + \
+                                10 * abs(current_node.pin.layer-end_node.pin.layer)
                             if(child.indx%3==0):
                                 child.g += 1
                             elif(child.indx%3==1):
@@ -119,9 +128,9 @@ def astar(Dgrid, nets):
                                 child.g += 10 * abs(current.pin.layer-child.pin.layer)
 
                         else:
-                            child.h = abs(current_node.pin.x-end.pin.x) + \
-                                15 * abs(current_node.pin.y-end.pin.y) + \
-                                10 * abs(current_node.pin.layer-end.pin.layer)
+                            child.h = abs(current_node.pin.x-end_node.pin.x) + \
+                                15 * abs(current_node.pin.y-end_node.pin.y) + \
+                                10 * abs(current_node.pin.layer-end_node.pin.layer)
                             if(child.indx%3==0):
                                 child.g += 15
                             elif(child.indx%3==1):
@@ -144,7 +153,17 @@ def astar(Dgrid, nets):
                             open_list.append(child)
         paths.append(path)
         for place in path:
-            Dgrid[place[0]][place[1]][place[2]] = ('nf'+str(index), 1) 
+            Dgrid[place[0]][place[1]][place[2]] = ('nf'+str(indx), 1) 
+
+
+
+path = 'test.txt' 
+
+input_parser = inputParser(path)
+astar(input_parser.pinsGrid,input_parser.nets)
+
+print ("DONE")
+
 
 """
 def main():

@@ -30,7 +30,7 @@ class inputParser:
                 x = int(pins[1])-1
                 y = int(pins[2])-1
                 ID = netID+"_p"+str(count)
-                newPin = Pin(layer, x, y, ID, None)
+                newPin = Pin(layer= layer, x=x, y=x, _id=ID)
                 self.layers = max(self.layers, int(newPin.layer)+1)
                 
                 count = count+1
