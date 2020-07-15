@@ -13,6 +13,9 @@ class Node():
         self.h = 0
         self.f = 0
 
+    def __hash__(self):
+        return hash(str(self))
+
     def __eq__(self, other):
         return (self.pin.x == other.pin.x and\
          self.pin.y == other.pin.y and \
@@ -70,9 +73,10 @@ def astar(Dgrid, nets):
                         current.h=0
                         startList.append(current)
                         current = current.parent
-                    path = list( dict.fromkeys(path.extend(list(dict.fromkeys(tempPath[::-1]))) ) )
-                    start_nodes = list( dict.fromkeys(start_nodes.extend(list(dict.fromkeys(startList[::-1]))) ) )
-
+                    path.extend(list(dict.fromkeys(tempPath[::-1])))
+                    path = list( dict.fromkeys(path ) )
+                    start_nodes.extend(list(dict.fromkeys(startList[::-1])))
+                    start_nodes = list( dict.fromkeys(start_nodes ) )
                 # Generate children
                 children = []
                 for i, new_position in enumerate([(0, 0, 1), (0, 1, 0), (1, 0, 0), (0, 0, -1), (0, -1, 0), (-1, 0, 0)]): # Adjacent squares
@@ -86,7 +90,7 @@ def astar(Dgrid, nets):
                         continue
 
                     # Make sure walkable terrain
-                    if Dgrid[node_pin.layer][node_pin.y][node_pin.x] != 0:
+                    if Dgrid[node_pin.layer][node_pin.y][node_pin.x][1] != 0:
                         continue
 
                     # Create new node
@@ -108,26 +112,26 @@ def astar(Dgrid, nets):
                     if(flag1):
                         # Create the f, g, and h values
                         if(child.pin.layer %2):
-                            child.h = abs(current_node.pin.x-end.pin.x) + \
-                                15 * abs(current_node.pin.y-end.pin.y) + \
-                                10 * abs(current_node.pin.layer-end.pin.layer)
+                            child.h = abs(current_node.pin.x-end_node.pin.x) + \
+                                15 * abs(current_node.pin.y-end_node.pin.y) + \
+                                10 * abs(current_node.pin.layer-end_node.pin.layer)
                             if(child.indx%3==0):
                                 child.g += 1
                             elif(child.indx%3==1):
                                 child.g += 15
                             else:
-                                child.g += 10 * abs(current.pin.layer-child.pin.layer)
+                                child.g += 10 * abs(current_node.pin.layer-child.pin.layer)
 
                         else:
-                            child.h = abs(current_node.pin.x-end.pin.x) + \
-                                15 * abs(current_node.pin.y-end.pin.y) + \
-                                10 * abs(current_node.pin.layer-end.pin.layer)
+                            child.h = abs(current_node.pin.x-end_node.pin.x) + \
+                                15 * abs(current_node.pin.y-end_node.pin.y) + \
+                                10 * abs(current_node.pin.layer-end_node.pin.layer)
                             if(child.indx%3==0):
                                 child.g += 15
                             elif(child.indx%3==1):
                                 child.g += 1
                             else:
-                                child.g += 10 * abs(current.pin.layer-child.pin.layer)
+                                child.g += 10 * abs(current_node.pin.layer-child.pin.layer)
 
                         
                         child.f = child.g + child.h
