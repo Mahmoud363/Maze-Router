@@ -27,16 +27,16 @@ class inputParser:
                 layer = int(pins[0])-1
                 y = int(pins[1])-1
                 x = int(pins[2])-1
-                ID = netID+"_p"+str(count)
+                ID = "n"+str(count)
                 newPin = Pin(layer, y, x, ID)
                 self.layers = max(self.layers, int(newPin.layer)+1)
                 
-                count = count+1
                 cell.append(newPin)
+            count = count+1
             self.nets.append(cell)
     
     def createGrid(self):
-        self.pinsGrid = [[ [('',0) for i in range(self.dim)] for j in range(self.dim)] for k in range(self.layers)] 
+        self.pinsGrid = [[ [ ['',0] for i in range(self.dim)] for j in range(self.dim)] for k in range(self.layers)] 
         for cell in self.nets:
             for pin in cell:
                 #sprint(str(pin.layer)+ " " +str(pin.y)+ " "+ str(pin.x ))

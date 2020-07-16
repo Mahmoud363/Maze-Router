@@ -19,12 +19,13 @@ class Node():
     def __eq__(self, other):
         return (self.pin.x == other.pin.x and\
          self.pin.y == other.pin.y and \
-         self.pin.layer == other.pin.layer)
+         self.pin.layer == other.pin.layer) 
 
 
 def astar(Dgrid, nets):
     """Returns a list of tuples as a path from the given start to the given end in the given Dgrid"""
     paths = []
+    costs =[]
     for index, net in enumerate(nets):
         # Create start and end node
         start = net[0]
@@ -53,14 +54,14 @@ def astar(Dgrid, nets):
                 current_node = open_list[0]
                 current_index = 0
                 for index, item in enumerate(open_list):
-                    if item.f < current_node.f:
+                    if item.f <= current_node.f:
                         current_node = item
                         current_index = index
 
                 # Pop current off open list, add to closed list
                 open_list.pop(current_index)
                 closed_list.append(current_node)
-
+                
                 # Found the goal and add it to the net path
                 if current_node == end_node:
                     tempPath = []
@@ -68,11 +69,13 @@ def astar(Dgrid, nets):
                     current = current_node
                     while current is not None:
                         tempPath.append((current.pin.layer, current.pin.y, current.pin.x))
+                        costs.append([current.f,current.g, current.h])
                         current.f=0
                         current.g=0
                         current.h=0
                         startList.append(current)
                         current = current.parent
+                    costs = costs[::-1]
                     path.extend(list(dict.fromkeys(tempPath[::-1])))
                     path = list( dict.fromkeys(path ) )
                     start_nodes.extend(list(dict.fromkeys(startList[::-1])))
@@ -115,25 +118,25 @@ def astar(Dgrid, nets):
                         # Create the f, g, and h values
                         if(child.pin.layer %2==1):
                             child.h = abs(child.pin.x-end_node.pin.x) + \
-                                15 * abs(child.pin.y-end_node.pin.y) + \
-                                10 * abs(child.pin.layer-end_node.pin.layer)
+                                abs(child.pin.y-end_node.pin.y) + \
+                                 abs(child.pin.layer-end_node.pin.layer)
                             if(child.indx%3==0):
-                                child.g += 1
+                                child.g = child.parent.g + 1
                             elif(child.indx%3==1):
-                                child.g += 15
+                                child.g = child.parent.g + 10
                             else:
-                                child.g += 10 * abs(current_node.pin.layer-child.pin.layer)
+                                child.g = child.parent.g + 10 * abs(current_node.pin.layer-child.pin.layer)
 
                         else:
-                            child.h = 15 * abs(child.pin.x-end_node.pin.x) + \
+                            child.h = abs(child.pin.x-end_node.pin.x) + \
                                 abs(child.pin.y-end_node.pin.y) + \
-                                10 * abs(child.pin.layer-end_node.pin.layer)
+                                abs(child.pin.layer-end_node.pin.layer)
                             if(child.indx%3==0):
-                                child.g += 15
+                                child.g = child.parent.g + 10
                             elif(child.indx%3==1):
-                                child.g += 1
+                                child.g = child.parent.g + 1
                             else:
-                                child.g += 10 * abs(current_node.pin.layer-child.pin.layer)
+                                child.g = child.parent.g + 10 * abs(current_node.pin.layer-child.pin.layer)
 
                         
                         child.f = child.g + child.h
@@ -150,7 +153,8 @@ def astar(Dgrid, nets):
                             open_list.append(child)
         paths.append(path)
         for place in path:
-            Dgrid[place[0]][place[1]][place[2]] = ('nf'+str(index), 1) 
+            Dgrid[place[0]][place[1]][place[2]] = ['nf'+str(index), 1] 
+        print(costs)
     return paths
 
 """
