@@ -1,9 +1,3 @@
-"""
-Data Structures for LEF Parser
-Author: Tri Minh Cao
-Email: tricao@utdallas.edu
-Date: August 2016
-"""
 from util import *
 
 class Statement:
@@ -26,6 +20,7 @@ class Statement:
         if data[0] == "MACRO":
             name = data[1]
             new_state = Macro(name)
+            print(new_state)
             return new_state
         elif data[0] == "LAYER" and len(data) == 2: # does not have ;
             name = data[1]
@@ -78,6 +73,7 @@ class Macro(Statement):
                     s += "    " + str(pin) + "\n"
             else:
                 s += "    " + key + ": " + str(self.info[key]) + "\n"
+       # print(s)
         return s
 
     def parse_next(self, data):
@@ -124,7 +120,9 @@ class Macro(Statement):
         return 0
 
     def get_pin(self, pin_name):
+        print(self.pin_dict[pin_name])
         return self.pin_dict[pin_name]
+
 
 
 class Pin(Statement):
@@ -136,6 +134,7 @@ class Pin(Statement):
         Statement.__init__(self)
         self.type = "PIN"
         self.name = name
+        print(self.name)
         self.info = {}
 
     def __str__(self):
@@ -183,11 +182,13 @@ class Port(Statement):
         self.info = {}
 
     def parse_next(self, data):
+        counter=0
         if data[0] == "END":
             return 1
         elif data[0] == "LAYER":
             name = data[1]
             new_layerdef = LayerDef(data[1])
+            print(new_layerdef)
             if "LAYER" in self.info:
                 self.info["LAYER"].append(new_layerdef)
             else:
@@ -195,6 +196,8 @@ class Port(Statement):
         elif data[0] == "RECT":
             # error if the self.info["LAYER"] does not exist
             self.info["LAYER"][-1].add_rect(data)
+            counter = counter+1
+            # print(counter)
         elif data[0] == "POLYGON":
             self.info["LAYER"][-1].add_polygon(data)
         return 0
@@ -265,6 +268,7 @@ class LayerDef:
     def __init__(self, name):
         self.type = "LayerDef"
         self.name = name
+        print(self.name)
         self.shapes = []
 
     def add_rect(self, data):
@@ -273,8 +277,12 @@ class LayerDef:
         x1 = float(data[3])
         y1 = float(data[4])
         points = [(x0, y0), (x1, y1)]
+        print(points)
         rect = Rect(points)
+
         self.shapes.append(rect)
+
+
 
     def add_polygon(self, data):
         points = []
@@ -284,6 +292,7 @@ class LayerDef:
             y_cor = float(data[idx+1])
             points.append([x_cor, y_cor])
         polygon = Polygon(points)
+        #print(polygon)
         self.shapes.append(polygon)
 
 
@@ -316,6 +325,7 @@ class Layer(Statement):
         Statement.__init__(self)
         self.type = "LAYER"
         self.name = name
+        print(self.name)
         self.layer_type = None
         self.spacing_table = None
         self.spacing = None
@@ -350,8 +360,8 @@ class Layer(Statement):
             self.pitch = float(data[1])
         elif data[0] == "DIRECTION":
             self.direction = data[1]
-     #   elif data[0] == "OFFSET":
-            #self.offset = (float(data[1]), float(data[2]))
+        # elif data[0] == "OFFSET":
+        #     self.offset = (float(data[1]), float(data[2]))
         elif data[0] == "RESISTANCE":
             if self.layer_type == "ROUTING":
                 self.resistance = (data[1], float(data[2]))
@@ -397,4 +407,3 @@ class Via(Statement):
         elif data[0] == "POLYGON":
             self.layers.add_polygon(data)
         return 0
-
