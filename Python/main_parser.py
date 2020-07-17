@@ -10,3 +10,9 @@ for net in def_p.nets:
 lef_text = "/home/ismael/Downloads/lef-parser-master/osu035.lef"
 lef_p = LefParser(lef_text)
 lef_p.parse()
+#print(lef_p.macro_dict)
+for  index in lef_p.macro_dict.keys():
+
+    #name = macro.name
+    for pin in lef_p.macro_dict[index].pin_dict:
+        print(lef_p.macro_dict[index].pin_dict[pin])
