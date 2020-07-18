@@ -1,3 +1,5 @@
+from queue import PriorityQueue
+
 from inputPaser import inputParser
 from pin import Pin
 
@@ -20,9 +22,11 @@ class Node():
         return (self.pin.x == other.pin.x and\
          self.pin.y == other.pin.y and \
          self.pin.layer == other.pin.layer) 
+    def __lt__(self, other):
+        return self.f < other.f
 
 
-def astar(Dgrid, nets):
+def astar(Dgrid, nets, layers, width, height):
     """Returns a list of tuples as a path from the given start to the given end in the given Dgrid"""
     paths = []
     costs =[]
@@ -38,7 +42,7 @@ def astar(Dgrid, nets):
             end = p
 
             end_node = Node(None, end)
-            Dgrid[p.layer][p.y][p.x][1] =0
+            Dgrid[(p.layer, p.y, p.x)] =0
             # Initialize both open and closed list
             open_list = []
             closed_list = []
@@ -80,8 +84,7 @@ def astar(Dgrid, nets):
                     path = list( dict.fromkeys(path ) )
                     start_nodes.extend(list(dict.fromkeys(startList[::-1])))
                     start_nodes = list( dict.fromkeys(start_nodes ) )
-                    open_list = []
-                    continue
+                    break
                 # Generate children
                 children = []
                 for i, new_position in enumerate([(0, 0, 1), (0, 1, 0), (1, 0, 0), (0, 0, -1), (0, -1, 0), (-1, 0, 0)]): # Adjacent squares
@@ -90,13 +93,14 @@ def astar(Dgrid, nets):
                     node_pin = Pin(current_node.pin.layer + new_position[0], current_node.pin.y + new_position[1],  current_node.pin.x + new_position[2], start.id ) # fix this
                     
                     # Make sure within range
-                    if node_pin.layer > (len(Dgrid) - 1) or node_pin.layer < 0 or node_pin.y > (len(Dgrid[len(Dgrid)-1]) -1) or node_pin.y < 0 \
-                    or node_pin.x > (len(Dgrid[0][0]) -1) or node_pin.x < 0 :
+                    if node_pin.layer > (layers) or node_pin.layer < 0 or node_pin.y > (height -1) or node_pin.y < 0 \
+                    or node_pin.x > (width -1) or node_pin.x < 0 :
                         continue
 
                     # Make sure walkable terrain
-                    if Dgrid[node_pin.layer][node_pin.y][node_pin.x][1] != 0:
-                        continue
+                    if( (node_pin.layer, node_pin.y, node_pin.x) in Dgrid):
+                        if Dgrid[(node_pin.layer, node_pin.y, node_pin.x)] != 0:
+                            continue
 
                     # Create new node
 
@@ -116,7 +120,7 @@ def astar(Dgrid, nets):
 
                     if(flag1):
                         # Create the f, g, and h values
-                        if(child.pin.layer %2==1):
+                        if(child.pin.layer %2==0):
                             child.h = abs(child.pin.x-end_node.pin.x) + \
                                 abs(child.pin.y-end_node.pin.y) + \
                                  abs(child.pin.layer-end_node.pin.layer)
@@ -149,12 +153,15 @@ def astar(Dgrid, nets):
 
                         if(flag2):
                             # Add the child to the open list
-                            Dgrid[child.pin.layer][child.pin.y][child.pin.x] = (child.pin.id,0)
+                            #Dgrid[(child.pin.layer, child.pin.y, child.pin.x)] = 0
                             open_list.append(child)
+            if (len(open_list) == 0):
+                print("Net n" + str(index) + " Failed")
+                break
         paths.append(path)
         for place in path:
-            Dgrid[place[0]][place[1]][place[2]] = ['nf'+str(index), 1] 
-        print(costs)
+            Dgrid[(place[0], place[1], place[2])] =  1
+        
     return paths
 
 """
