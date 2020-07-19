@@ -34,9 +34,9 @@ for i in range(index):
     pixelImage.append( img[i].load() )
   
 for  patharray in paths: 
-    x= random.randint(100,255) 
-    y=random.randint(100,255) 
-    z=random.randint(100,255) 
+    x= random.randint(0,150) 
+    y=random.randint(0,150) 
+    z=random.randint(0,150) 
     for path in (patharray):
         (templayer, tempy, tempx) = path
         pixelImage[templayer-1][tempx-1, tempy-1]= ( x,y,z)
