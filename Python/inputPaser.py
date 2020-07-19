@@ -7,8 +7,7 @@ class inputParser:
     
 
     def __init__(self, path):
-        self.dim = 1000
-        self.pattern = r'\((.*?)\)'
+        self.pattern = r'\((.*?)\)' # regex to extract the pins
         self.layers = 0
         self.nets = []
         self.pinsGrid = {}
@@ -17,6 +16,7 @@ class inputParser:
         textFile = open(path,'r')
         lines = textFile.readlines()
         for line in lines:
+            # parsing the input file to generate the netlist structure
             netID = line.split(' ')[0]
             parse = re.findall(self.pattern,line)
             cell = []
@@ -29,17 +29,16 @@ class inputParser:
                 x = int(pins[2])-1
                 ID = netID
                 newPin = Pin(layer, y, x, ID)
-                self.layers = max(self.layers, int(newPin.layer)+1)
+                self.layers = max(self.layers, int(newPin.layer)+1) # calculating the maximum layer from the input
                 
                 cell.append(newPin)
             count = count+1
             self.nets.append(cell)
     
     def createGrid(self):
-        #self.pinsGrid = [[ [ ['',0] for i in range(self.dim)] for j in range(self.dim)] for k in range(self.layers)] 
         for cell in self.nets:
             for pin in cell:
-                #sprint(str(pin.layer)+ " " +str(pin.y)+ " "+ str(pin.x ))
+                # mark each tuple of the pins as visited to avoid and wrong routing
                 self.pinsGrid[(pin.layer, pin.y, pin.x)] =  1
     
     def getIDs(self):

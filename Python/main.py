@@ -13,14 +13,19 @@ start_time = time.time()
 
 path = input('Enter the netlist path: ')
 
+# start of the parsing
 input_parser = inputParser(path)
 
 input_parser.parseFile(path)
 
 input_parser.createGrid()
 
+# generated the routing paths
 paths = astar(input_parser.pinsGrid, input_parser.nets, input_parser.layers, width, height)
+
 print("--- %s seconds ---" % (time.time() - start_time))
+
+
 img = []
 pixelImage = []
 index = input_parser.layers
@@ -47,7 +52,6 @@ for net in input_parser.nets:
     output.append([net[0].id])
 
 for index, path in enumerate(paths):
-    #path
     for route in path:
         output[index].append(route)
 outFile = open("Routed.txt", 'w+')

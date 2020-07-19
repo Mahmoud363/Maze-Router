@@ -47,7 +47,7 @@ def astar(Dgrid, nets, layers, width, height):
             open_list = []
             closed_list = []
 
-            # Add the start node
+            # Add the start nodes
             for start_node in start_nodes:
                 open_list.append(start_node)
 
@@ -120,7 +120,7 @@ def astar(Dgrid, nets, layers, width, height):
 
                     if(flag1):
                         # Create the f, g, and h values
-                        if(child.pin.layer %2==0):
+                        if(child.pin.layer %2==0):  # horizontal layers
                             child.h = abs(child.pin.x-end_node.pin.x) + \
                                 abs(child.pin.y-end_node.pin.y) + \
                                  abs(child.pin.layer-end_node.pin.layer)
@@ -131,7 +131,7 @@ def astar(Dgrid, nets, layers, width, height):
                             else:
                                 child.g = child.parent.g + 10 * abs(current_node.pin.layer-child.pin.layer)
 
-                        else:
+                        else:   # vertical layers
                             child.h = abs(child.pin.x-end_node.pin.x) + \
                                 abs(child.pin.y-end_node.pin.y) + \
                                 abs(child.pin.layer-end_node.pin.layer)
@@ -152,8 +152,6 @@ def astar(Dgrid, nets, layers, width, height):
                                 flag2 = False
 
                         if(flag2):
-                            # Add the child to the open list
-                            #Dgrid[(child.pin.layer, child.pin.y, child.pin.x)] = 0
                             if(child.pin.layer ==3):
                                 hg=0
                             open_list.append(child)
@@ -166,27 +164,3 @@ def astar(Dgrid, nets, layers, width, height):
         
     return paths
 
-"""
-def main():
-
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
-    start = (0, 0)
-    end = (7, 5)
-
-    path = astar(maze, start, end)
-    print(path)
-
-
-if __name__ == '__main__':
-    main()
-    """
