@@ -93,7 +93,7 @@ def astar(Dgrid, nets, layers, width, height):
                     node_pin = Pin(current_node.pin.layer + new_position[0], current_node.pin.y + new_position[1],  current_node.pin.x + new_position[2], start.id ) # fix this
                     
                     # Make sure within range
-                    if node_pin.layer > (layers) or node_pin.layer < 0 or node_pin.y > (height -1) or node_pin.y < 0 \
+                    if node_pin.layer >= (layers) or node_pin.layer < 0 or node_pin.y > (height -1) or node_pin.y < 0 \
                     or node_pin.x > (width -1) or node_pin.x < 0 :
                         continue
 

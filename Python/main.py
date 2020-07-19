@@ -6,13 +6,12 @@ import time
 from inputPaser import inputParser
 from A_Star import *
 
-"""width = input("Enter the grid width: ")
-height = input("Enter the grid height: ")"""
+width = int(input("Enter the grid width: "))
+height = int(input("Enter the grid height: "))
 start_time = time.time()
-width = 1000
-height = 1000
 
-path = 'test.txt' 
+
+path = input('Enter the netlist path: ')
 
 input_parser = inputParser(path)
 
