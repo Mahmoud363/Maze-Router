@@ -39,7 +39,7 @@ for  patharray in paths:
     z=random.randint(100,255) 
     for path in (patharray):
         (templayer, tempy, tempx) = path
-        pixelImage[templayer][tempx, tempy]= ( x,y,z)
+        pixelImage[templayer-1][tempx-1, tempy-1]= ( x,y,z)
 
 for i in range(index):
     text = "layer"+str(i+1)+".png"
