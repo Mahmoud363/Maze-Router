@@ -1,5 +1,3 @@
-from queue import PriorityQueue
-
 from inputPaser import inputParser
 from pin import Pin
 
@@ -163,4 +161,3 @@ def astar(Dgrid, nets, layers, width, height):
             Dgrid[(place[0]-1, place[1]-1, place[2]-1)] =  1
         
     return paths
-
