@@ -38,10 +38,9 @@ for i in range(index):
 # output the layers images
 
 for  patharray in paths: 
-
-    x= random.randint(0,100) 
-    y=random.randint(0,100) 
-    z=random.randint(0,100) 
+    x= random.randint(0,150) 
+    y=random.randint(0,150) 
+    z=random.randint(0,150) 
     for path in (patharray):
         (templayer, tempy, tempx) = path
         pixelImage[templayer-1][tempx-1, tempy-1]= ( x,y,z)
