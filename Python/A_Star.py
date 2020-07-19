@@ -72,7 +72,7 @@ def astar(Dgrid, nets, layers, width, height):
                     startList = []
                     current = current_node
                     while current is not None:
-                        tempPath.append((current.pin.layer, current.pin.y, current.pin.x))
+                        tempPath.append((current.pin.layer+1, current.pin.y+1, current.pin.x+1))
                         costs.append([current.f,current.g, current.h])
                         current.f=0
                         current.g=0
@@ -154,13 +154,15 @@ def astar(Dgrid, nets, layers, width, height):
                         if(flag2):
                             # Add the child to the open list
                             #Dgrid[(child.pin.layer, child.pin.y, child.pin.x)] = 0
+                            if(child.pin.layer ==3):
+                                hg=0
                             open_list.append(child)
             if (len(open_list) == 0):
                 print("Net n" + str(index) + " Failed")
                 break
         paths.append(path)
         for place in path:
-            Dgrid[(place[0], place[1], place[2])] =  1
+            Dgrid[(place[0]-1, place[1]-1, place[2]-1)] =  1
         
     return paths
 

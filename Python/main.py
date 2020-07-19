@@ -19,13 +19,13 @@ input_parser.parseFile(path)
 
 input_parser.createGrid()
 
-paths = astar(input_parser.pinsGrid, input_parser.nets, input_parser.layers+1, width, height)
+paths = astar(input_parser.pinsGrid, input_parser.nets, input_parser.layers, width, height)
 print("--- %s seconds ---" % (time.time() - start_time))
 img = []
 pixelImage = []
 index = input_parser.layers
 for i in range(index):
-    img.append(Image.new('RGB', (1000, 1000), color = (256, 256, 256)) )
+    img.append(Image.new('RGB', (width, height), color = (256, 256, 256)) )
     draw = ImageDraw.Draw(img[i])
     pixelImage.append( img[i].load() )
 
@@ -35,7 +35,7 @@ for  patharray in paths:
 
     for path in (patharray):
         (templayer, tempy, tempx) = path
-        pixelImage[templayer][tempx, tempy]= (0,0,0,255)
+        pixelImage[templayer-1][tempx-1, tempy-1]= (0,0,0,255)
 
 for i in range(index):
     text = "layer"+str(i+1)+".png"
@@ -47,7 +47,7 @@ for net in input_parser.nets:
     output.append([net[0].id])
 
 for index, path in enumerate(paths):
-    path
+    #path
     for route in path:
         output[index].append(route)
 outFile = open("Routed.txt", 'w+')
