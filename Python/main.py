@@ -2,34 +2,52 @@ import sys
 from PIL import Image, ImageDraw
 import time
 import random
+import copy
 
 
 from inputPaser import inputParser
 from A_Star import *
 
-width = int(input("Enter the grid width: "))
-height = int(input("Enter the grid height: "))
-start_time = time.time()
+
 
 
 path = input('Enter the netlist path: ')
+choice = int(input("Enter 1 to enter dimensions manually: "))
+"""if choice== 1:
+    width = int(input("Enter the grid width: "))
+    height = int(input("Enter the grid height: "))
+    layers = int(input("Enter the number of layers: "))
+else:
+    textFile = open(path,'r')
+    dim = textFile.readline().split(',')
+    width = int(dim[1])
+    height = int(dim[0])
+    layers = 4
+    textFile.close()"""
+
+
 
 # start of the parsing
-input_parser = inputParser(path)
+input_parser = inputParser(path,choice)
 
 input_parser.parseFile(path)
 
+
 input_parser.createGrid()
-
+layers = input_parser.layers
+width = input_parser.width
+height = input_parser.height
 # generated the routing paths
-paths = astar(input_parser.pinsGrid, input_parser.nets, input_parser.layers, width, height)
+netList = copy.deepcopy(input_parser.nets)
 
+start_time = time.time()
+paths = astar(input_parser.pinsGrid, netList, layers, width, height)
 print("--- %s seconds ---" % (time.time() - start_time))
 
 
 img = []
 pixelImage = []
-index = input_parser.layers
+index = layers
 for i in range(index):
     img.append(Image.new('RGB', (width, height), color = (256, 256, 256)) )
     draw = ImageDraw.Draw(img[i])
@@ -52,11 +70,12 @@ for i in range(index):
 #output the routed netlists
 output = []
 for net in input_parser.nets:
-    output.append([net[0].id])
+    if(len(net)>0):
+        output.append([net[0].id])
 
-for index, path in enumerate(paths):
+for indx, path in enumerate(paths):
     for route in path:
-        output[index].append(route)
+        output[indx].append(route)
 outFile = open("Routed.txt", 'w+')
 for index, out in enumerate(output):
 
